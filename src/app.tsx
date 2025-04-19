@@ -5,13 +5,12 @@ import '../src/assets/style.css';
 const App: React.FC = () => {
   const [image, setImage] = React.useState<HTMLImageElement | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-  const [gridSize, setGridSize] = React.useState(2);  // Default to 2x2
+  const [gridSize, setGridSize] = React.useState(2); // Default 2x2
   const [loading, setLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);  // Error state
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const gridSpacing = 10;
-
-  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];  // Allowed file types
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -22,8 +21,7 @@ const App: React.FC = () => {
       return;
     }
 
-    setErrorMessage(null); // Clear error message if file is valid
-
+    setErrorMessage(null);
     const img = new Image();
     img.onload = () => setImage(img);
     const url = URL.createObjectURL(file);
@@ -34,13 +32,12 @@ const App: React.FC = () => {
   const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file && !allowedTypes.includes(file.type)) {
+    if (!file || !allowedTypes.includes(file.type)) {
       setErrorMessage('Invalid file type. Please upload a .png, .jpeg, or .jpg file.');
       return;
     }
 
-    setErrorMessage(null); // Clear error message if file is valid
-
+    setErrorMessage(null);
     const img = new Image();
     img.onload = () => setImage(img);
     const url = URL.createObjectURL(file);
@@ -49,9 +46,7 @@ const App: React.FC = () => {
   };
 
   const handleDragAreaClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    if (fileInputRef.current) fileInputRef.current.click();
   };
 
   const createPuzzle = async () => {
@@ -70,27 +65,18 @@ const App: React.FC = () => {
 
     const pieceData: any[] = [];
 
-    // Create all pieces first
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         ctx.clearRect(0, 0, pw, ph);
         ctx.drawImage(image, x * pw, y * ph, pw, ph, 0, 0, pw, ph);
-
-        // Create a data URL for each piece
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);  // Reducing quality to 80%
-
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
         pieceData.push({ x, y, dataUrl });
       }
     }
 
-    // Shuffle the pieces randomly
     shuffleArray(pieceData);
 
-    // Create widgets with the shuffled puzzle pieces
-    const promises = [];
-
-    for (let i = 0; i < pieceData.length; i++) {
-      const piece = pieceData[i];
+    const promises = pieceData.map(async (piece, i) => {
       const widget = await miro.board.createImage({
         url: piece.dataUrl,
         x: (i % cols) * (pw + gridSpacing),
@@ -98,16 +84,13 @@ const App: React.FC = () => {
         width: pw,
       });
 
-      promises.push(
-        widget.setMetadata('puzzle', {
-          correctX: piece.x,
-          correctY: piece.y,
-          gridSize: gridSize,
-        })
-      );
-    }
+      return widget.setMetadata('puzzle', {
+        correctX: piece.x,
+        correctY: piece.y,
+        gridSize,
+      });
+    });
 
-    // Wait for all widget creations to complete
     await Promise.all(promises);
 
     setLoading(false);
@@ -132,9 +115,7 @@ const App: React.FC = () => {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      snapToGrid();
-    }, 2000);
+    const interval = setInterval(() => snapToGrid(), 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -148,11 +129,9 @@ const App: React.FC = () => {
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <p style={{ marginTop: '0', paddingTop: '0' }}>
-          Select a puzzle size, upload an image, preview it, and create the puzzle!
-        </p>
+        <p>Select a puzzle size, upload an image, and create the puzzle!</p>
 
-        {/* Puzzle Size */}
+        {/* Grid size */}
         <h2>Select Puzzle Size</h2>
         <div>
           {[2, 3, 4, 5].map((size) => (
@@ -167,7 +146,7 @@ const App: React.FC = () => {
           ))}
         </div>
 
-        {/* Upload Section */}
+        {/* Upload */}
         <h2>Upload an Image</h2>
         <div
           className="image-drop-zone"
@@ -182,24 +161,22 @@ const App: React.FC = () => {
             cursor: 'pointer',
           }}
         >
-          <p>Drag and drop an image here, or click to select an image (.png .jpg)</p>
+          <p>Drag and drop an image here, or click to select one (.png, .jpg)</p>
         </div>
         <input
           type="file"
-          accept=".png, .jpeg, .jpg"  // Only allow .png and .jpeg files
+          accept=".png, .jpeg, .jpg"
           onChange={handleImageUpload}
           ref={fileInputRef}
           style={{ display: 'none' }}
         />
 
-        {/* Error Message */}
+        {/* Error */}
         {errorMessage && (
-          <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>
-            {errorMessage}
-          </p>
+          <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{errorMessage}</p>
         )}
 
-        {/* Preview Section */}
+        {/* Preview */}
         {imagePreview && (
           <>
             <h2>Preview</h2>
@@ -211,17 +188,21 @@ const App: React.FC = () => {
           </>
         )}
 
-        {/* Create Puzzle Section */}
+        {/* Create Puzzle */}
         {imagePreview && (
           <>
             <h2>Create Puzzle</h2>
-            <button
-              className="button button-primary"
-              onClick={createPuzzle}
-              disabled={loading}
-            >
-              {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <button
+                className="button button-primary"
+                onClick={createPuzzle}
+                disabled={loading}
+                style={{ marginRight: '8px' }}
+              >
+                {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
+              </button>
+              {loading && <div className="spinner" />}
+            </div>
           </>
         )}
       </div>
