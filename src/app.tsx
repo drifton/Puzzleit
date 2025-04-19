@@ -1,0 +1,234 @@
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
+import '../src/assets/style.css';
+
+const App: React.FC = () => {
+  const [image, setImage] = React.useState<HTMLImageElement | null>(null);
+  const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+  const [gridSize, setGridSize] = React.useState(2);  // Default to 2x2
+  const [loading, setLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);  // Error state
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const gridSpacing = 10;
+
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];  // Allowed file types
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!allowedTypes.includes(file.type)) {
+      setErrorMessage('Invalid file type. Please upload a .png, .jpeg, or .jpg file.');
+      return;
+    }
+
+    setErrorMessage(null); // Clear error message if file is valid
+
+    const img = new Image();
+    img.onload = () => setImage(img);
+    const url = URL.createObjectURL(file);
+    img.src = url;
+    setImagePreview(url);
+  };
+
+  const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && !allowedTypes.includes(file.type)) {
+      setErrorMessage('Invalid file type. Please upload a .png, .jpeg, or .jpg file.');
+      return;
+    }
+
+    setErrorMessage(null); // Clear error message if file is valid
+
+    const img = new Image();
+    img.onload = () => setImage(img);
+    const url = URL.createObjectURL(file);
+    img.src = url;
+    setImagePreview(url);
+  };
+
+  const handleDragAreaClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const createPuzzle = async () => {
+    if (!image) return;
+    setLoading(true);
+
+    const rows = gridSize;
+    const cols = gridSize;
+    const pw = image.width / cols;
+    const ph = image.height / rows;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+    canvas.width = pw;
+    canvas.height = ph;
+
+    const pieceData: any[] = [];
+
+    // Create all pieces first
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        ctx.clearRect(0, 0, pw, ph);
+        ctx.drawImage(image, x * pw, y * ph, pw, ph, 0, 0, pw, ph);
+
+        // Create a data URL for each piece
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);  // Reducing quality to 80%
+
+        pieceData.push({ x, y, dataUrl });
+      }
+    }
+
+    // Shuffle the pieces randomly
+    shuffleArray(pieceData);
+
+    // Create widgets with the shuffled puzzle pieces
+    const promises = [];
+
+    for (let i = 0; i < pieceData.length; i++) {
+      const piece = pieceData[i];
+      const widget = await miro.board.createImage({
+        url: piece.dataUrl,
+        x: (i % cols) * (pw + gridSpacing),
+        y: Math.floor(i / cols) * (ph + gridSpacing),
+        width: pw,
+      });
+
+      promises.push(
+        widget.setMetadata('puzzle', {
+          correctX: piece.x,
+          correctY: piece.y,
+          gridSize: gridSize,
+        })
+      );
+    }
+
+    // Wait for all widget creations to complete
+    await Promise.all(promises);
+
+    setLoading(false);
+    setImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const snapToGrid = async () => {
+    const widgets = await miro.board.get({ type: 'image' });
+
+    for (const widget of widgets) {
+      const meta = (await widget.getMetadata())?.puzzle;
+      if (!meta || !widget) continue;
+
+      const size = widget.width + gridSpacing;
+      const snappedX = Math.round(widget.x / size) * size;
+      const snappedY = Math.round(widget.y / size) * size;
+
+      await widget.set({ x: snappedX, y: snappedY });
+    }
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      snapToGrid();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const shuffleArray = (array: any[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
+  return (
+    <div className="grid wrapper">
+      <div className="cs1 ce12">
+        <p style={{ marginTop: '0', paddingTop: '0' }}>
+          Select a puzzle size, upload an image, preview it, and create the puzzle!
+        </p>
+
+        {/* Puzzle Size */}
+        <h2>Select Puzzle Size</h2>
+        <div>
+          {[2, 3, 4, 5].map((size) => (
+            <button
+              key={size}
+              className={`button ${gridSize === size ? 'button-primary' : ''}`}
+              onClick={() => setGridSize(size)}
+              style={{ marginRight: 8 }}
+            >
+              {size} x {size}
+            </button>
+          ))}
+        </div>
+
+        {/* Upload Section */}
+        <h2>Upload an Image</h2>
+        <div
+          className="image-drop-zone"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleImageDrop}
+          onClick={handleDragAreaClick}
+          style={{
+            border: '2px dashed #aaa',
+            padding: '1rem',
+            textAlign: 'center',
+            marginBottom: '1rem',
+            cursor: 'pointer',
+          }}
+        >
+          <p>Drag and drop an image here, or click to select an image (.png .jpg)</p>
+        </div>
+        <input
+          type="file"
+          accept=".png, .jpeg, .jpg"  // Only allow .png and .jpeg files
+          onChange={handleImageUpload}
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+        />
+
+        {/* Error Message */}
+        {errorMessage && (
+          <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>
+            {errorMessage}
+          </p>
+        )}
+
+        {/* Preview Section */}
+        {imagePreview && (
+          <>
+            <h2>Preview</h2>
+            <img
+              src={imagePreview}
+              alt="Preview"
+              style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '1rem' }}
+            />
+          </>
+        )}
+
+        {/* Create Puzzle Section */}
+        {imagePreview && (
+          <>
+            <h2>Create Puzzle</h2>
+            <button
+              className="button button-primary"
+              onClick={createPuzzle}
+              disabled={loading}
+            >
+              {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(<App />);
