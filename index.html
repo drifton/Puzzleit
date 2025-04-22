@@ -10,24 +10,30 @@
   <body>
     <div id="root" aria-hidden="true">
       <div class="grid container" style="text-align: center; padding-top: 4rem;">
+        <!-- Welcome Image -->
         <div class="cs1 ce12">
           <img src="/src/assets/welcome.png" alt="Welcome" style="max-width: 500px;" />
         </div>
+
+        <!-- Description Text -->
         <div class="cs1 ce12" style="margin-top: 2rem;">
-          <h2>This app is hosted on 
+          <h2>
+            This app is hosted on 
             <a 
               href="https://www.netlify.com" 
               target="_blank" 
               rel="noopener noreferrer"
               style="color: #007aff; text-decoration: none;"
             >
-              Netlify.com
+              Netlify
             </a>
           </h2>
           <p style="font-size: 16px; color: #555;">
             To use it in Miro, open it in an app panel or preview it below.
           </p>
         </div>
+
+        <!-- Preview App Button -->
         <div class="cs1 ce12" style="margin-top: 1rem;">
           <a
             class="button button-primary"
@@ -36,6 +42,15 @@
           >
             Preview App
           </a>
+        </div>
+
+        <!-- Netlify Deploy Badge (image only, not a link) -->
+        <div class="cs1 ce12" style="margin-top: 2rem;">
+          <img 
+            src="https://api.netlify.com/api/v1/badges/357441f8-4d38-4960-8e6a-2973a74c8edd/deploy-status" 
+            alt="Netlify Status"
+            style="max-width: 200px;"
+          />
         </div>
       </div>
     </div>
