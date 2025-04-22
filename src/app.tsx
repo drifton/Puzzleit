@@ -5,7 +5,7 @@ import '../src/assets/style.css';
 const App: React.FC = () => {
   const [image, setImage] = React.useState<HTMLImageElement | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-  const [gridSize, setGridSize] = React.useState(2); // Default 2x2
+  const [gridSize, setGridSize] = React.useState(2);
   const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -127,86 +127,139 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="grid wrapper">
-      <div className="cs1 ce12">
-        <p>Select a puzzle size, upload an image, and create the puzzle!</p>
+    <>
+      <div className="grid wrapper">
+        <div className="cs1 ce12">
+          <p>Select a puzzle size, upload an image, and create the puzzle!</p>
 
-        {/* Grid size */}
-        <h2>Select Puzzle Size</h2>
-        <div>
-          {[2, 3, 4, 5].map((size) => (
-            <button
-              key={size}
-              className={`button ${gridSize === size ? 'button-primary' : ''}`}
-              onClick={() => setGridSize(size)}
-              style={{ marginRight: 8 }}
-            >
-              {size} x {size}
-            </button>
-          ))}
+          <h2>Select Puzzle Size</h2>
+          <div>
+            {[2, 3, 4, 5].map((size) => (
+              <button
+                key={size}
+                className={`button ${gridSize === size ? 'button-primary' : ''}`}
+                onClick={() => setGridSize(size)}
+                style={{ marginRight: 8 }}
+              >
+                {size} x {size}
+              </button>
+            ))}
+          </div>
+
+          <h2>Upload an Image</h2>
+          <div
+            className="image-drop-zone"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleImageDrop}
+            onClick={handleDragAreaClick}
+            style={{
+              border: '2px dashed #aaa',
+              padding: '1rem',
+              textAlign: 'center',
+              marginBottom: '1rem',
+              cursor: 'pointer',
+            }}
+          >
+            <p>Drag and drop an image here, or click to select one (.png, .jpg)</p>
+          </div>
+          <input
+            type="file"
+            accept=".png, .jpeg, .jpg"
+            onChange={handleImageUpload}
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+          />
+
+          {errorMessage && (
+            <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{errorMessage}</p>
+          )}
+
+          {imagePreview && (
+            <>
+              <h2>Preview</h2>
+              <img
+                src={imagePreview}
+                alt="Preview"
+                style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '1rem' }}
+              />
+            </>
+          )}
+
+          {imagePreview && (
+            <>
+              <h2>Create Puzzle</h2>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <button
+                  className="button button-primary"
+                  onClick={createPuzzle}
+                  disabled={loading}
+                  style={{ marginRight: '8px' }}
+                >
+                  {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
+                </button>
+                {loading && <div className="spinner" />}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Fixed bottom-right icons */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end', // Align items to the right
+        }}
+      >
+        {/* Icons */}
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <a
+            href="https://miro.com/marketplace/puzzleit/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-button"
+            title="More Info"
+            role="button"
+          >
+            <span className="icon icon-info" />
+          </a>
+          <a
+            href="https://forms.gle/2ZJZA5EhNdhfZivW8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-button"
+            title="Comment-Feedback"
+            role="button"
+          >
+            <span className="icon icon-comment-feedback" />
+          </a>
         </div>
 
-        {/* Upload */}
-        <h2>Upload an Image</h2>
+        {/* Footer text */}
         <div
-          className="image-drop-zone"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleImageDrop}
-          onClick={handleDragAreaClick}
           style={{
-            border: '2px dashed #aaa',
-            padding: '1rem',
-            textAlign: 'center',
-            marginBottom: '1rem',
-            cursor: 'pointer',
+            marginTop: '0.5rem',
+            fontSize: '12px',
+            color: '#777',
+            textAlign: 'right', // Align the footer text to the right
           }}
         >
-          <p>Drag and drop an image here, or click to select one (.png, .jpg)</p>
+          Powered by:{" "}
+          <a
+            href="https://linkedin.com/in/driton-christensen"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#4262ff', textDecoration: 'none' }}
+          >
+            Driton Christensen
+          </a>
         </div>
-        <input
-          type="file"
-          accept=".png, .jpeg, .jpg"
-          onChange={handleImageUpload}
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-        />
-
-        {/* Error */}
-        {errorMessage && (
-          <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{errorMessage}</p>
-        )}
-
-        {/* Preview */}
-        {imagePreview && (
-          <>
-            <h2>Preview</h2>
-            <img
-              src={imagePreview}
-              alt="Preview"
-              style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '1rem' }}
-            />
-          </>
-        )}
-
-        {/* Create Puzzle */}
-        {imagePreview && (
-          <>
-            <h2>Create Puzzle</h2>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <button
-                className="button button-primary"
-                onClick={createPuzzle}
-                disabled={loading}
-                style={{ marginRight: '8px' }}
-              >
-                {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
-              </button>
-              {loading && <div className="spinner" />}
-            </div>
-          </>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

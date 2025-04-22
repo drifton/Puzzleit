@@ -32,6 +32,27 @@ img {
   animation: spin 1s linear infinite;
 }
 
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.icon-button .icon {
+  font-size: 24px;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover effects */
+.icon-button:hover {
+  transform: scale(1.2);
+  filter: invert(19%) sepia(97%) saturate(1883%) hue-rotate(235deg) brightness(97%) contrast(98%);  
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
