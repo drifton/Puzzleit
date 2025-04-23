@@ -7,6 +7,7 @@ const App: React.FC = () => {
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const [gridSize, setGridSize] = React.useState(2);
   const [loading, setLoading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const gridSpacing = 10;
@@ -52,6 +53,7 @@ const App: React.FC = () => {
   const createPuzzle = async () => {
     if (!image) return;
     setLoading(true);
+    setProgress(0);
 
     const rows = gridSize;
     const cols = gridSize;
@@ -76,7 +78,9 @@ const App: React.FC = () => {
 
     shuffleArray(pieceData);
 
-    const promises = pieceData.map(async (piece, i) => {
+    const totalPieces = pieceData.length;
+    for (let i = 0; i < totalPieces; i++) {
+      const piece = pieceData[i];
       const widget = await miro.board.createImage({
         url: piece.dataUrl,
         x: (i % cols) * (pw + gridSpacing),
@@ -84,16 +88,17 @@ const App: React.FC = () => {
         width: pw,
       });
 
-      return widget.setMetadata('puzzle', {
+      await widget.setMetadata('puzzle', {
         correctX: piece.x,
         correctY: piece.y,
         gridSize,
       });
-    });
 
-    await Promise.all(promises);
+      setProgress(i + 1);
+    }
 
     setLoading(false);
+    setProgress(0);
     setImage(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -128,7 +133,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="grid wrapper">
+      <div className="grid wrapper" style={{ paddingBottom: '100px' }}>
         <div className="cs1 ce12">
           <p>Select a puzzle size, upload an image, and create the puzzle!</p>
 
@@ -187,7 +192,7 @@ const App: React.FC = () => {
 
           {imagePreview && (
             <>
-              <h2>Create Puzzle</h2>
+              <h2 style={{ marginTop: '0px' }}>Create Puzzle</h2>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <button
                   className="button button-primary"
@@ -199,23 +204,33 @@ const App: React.FC = () => {
                 </button>
                 {loading && <div className="spinner" />}
               </div>
+              {loading && (
+                <div style={{ marginTop: '0.5rem', fontSize: '14px', color: '#666' }}>
+                  Progress: {progress} / {gridSize * gridSize}
+                </div>
+              )}
             </>
           )}
         </div>
       </div>
 
-      {/* Fixed bottom-right icons */}
-      <div
+      {/* Fixed bottom-right icons and footer */}
+      <footer
         style={{
           position: 'fixed',
-          bottom: '20px',
-          right: '20px',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          backgroundColor: '#fff',
+          //borderTop: '1px solid #ddd',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end', // Align items to the right
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px 20px',
+          //boxShadow: '0 -1px 5px rgba(0, 0, 0, 0.05)',
+          zIndex: 1000,
         }}
       >
-        {/* Icons */}
         <div style={{ display: 'flex', gap: '1rem' }}>
           <a
             href="https://miro.com/marketplace/puzzleit/"
@@ -238,17 +253,13 @@ const App: React.FC = () => {
             <span className="icon icon-comment-feedback" />
           </a>
         </div>
-
-        {/* Footer text */}
         <div
           style={{
-            marginTop: '0.5rem',
             fontSize: '12px',
             color: '#777',
-            textAlign: 'right', // Align the footer text to the right
           }}
         >
-          Powered by:{" "}
+          Powered by:{' '}
           <a
             href="https://linkedin.com/in/driton-christensen"
             target="_blank"
@@ -258,7 +269,7 @@ const App: React.FC = () => {
             Driton Christensen
           </a>
         </div>
-      </div>
+      </footer>
     </>
   );
 };

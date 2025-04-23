@@ -15,6 +15,7 @@ body {
   overflow: auto;
   padding: var(--space-medium);
   padding-top: 0px;
+  padding-left: 22px;
 }
 
 img {
