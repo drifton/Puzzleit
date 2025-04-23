@@ -194,15 +194,21 @@ const App: React.FC = () => {
             <>
               <h2 style={{ marginTop: '0px' }}>Create Puzzle</h2>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <button
-                  className="button button-primary"
-                  onClick={createPuzzle}
-                  disabled={loading}
-                  style={{ marginRight: '8px' }}
-                >
-                  {loading ? 'Creating Puzzle...' : 'Create Puzzle'}
-                </button>
-                {loading && <div className="spinner" />}
+              <button
+              className="button button-primary"
+              onClick={createPuzzle}
+              disabled={loading}
+              >
+              {loading ? (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span>Creating Puzzle...</span>
+              <div className="spinner" style={{ width: '16px', height: '16px', float: 'right', marginLeft: '8px' }} />
+              </div>
+              ) : (
+              'Create Puzzle'
+              )}
+              </button>
+                
               </div>
               {loading && (
                 <div style={{ marginTop: '0.5rem', fontSize: '14px', color: '#666' }}>
