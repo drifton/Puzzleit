@@ -50,6 +50,12 @@ const App: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const createPuzzle = async () => {
     if (!image) return;
     setLoading(true);
@@ -99,9 +105,7 @@ const App: React.FC = () => {
 
     setLoading(false);
     setProgress(0);
-    setImage(null);
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    removeImage();
   };
 
   const snapToGrid = async () => {
@@ -151,7 +155,14 @@ const App: React.FC = () => {
             ))}
           </div>
 
-          <h2>Upload an Image</h2>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            Upload an Image
+            <span className="tooltip">
+              <span className="icon icon-info" style={{ fontSize: '18px', color: '#999', cursor: 'pointer' }} />
+              <span className="tooltiptext">Accepted file types: PNG, JPEG, JPG</span>
+            </span>
+          </h2>
+
           <div
             className="image-drop-zone"
             onDragOver={(e) => e.preventDefault()}
@@ -165,8 +176,9 @@ const App: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            <p>Drag and drop an image here, or click to select one (.png, .jpg)</p>
+            <p>Drag and drop an image here, or click to select one</p>
           </div>
+
           <input
             type="file"
             accept=".png, .jpeg, .jpg"
@@ -185,30 +197,48 @@ const App: React.FC = () => {
               <img
                 src={imagePreview}
                 alt="Preview"
-                style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '1rem' }}
+                style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '0.5rem' }}
               />
+
+              <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '8px' }}>
+                <button
+                  className="button button-danger"
+                  type="button"
+                  aria-label="Remove image"
+                  onClick={() => {
+                    setImage(null);
+                    setImagePreview(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  style={{ cursor: 'pointer' }}  // Add cursor style here for pointer effect
+                >
+                  <span 
+                  className="icon icon-trash" 
+                  style={{ cursor: 'pointer' }}  // Add cursor style directly to the icon
+                  />
+                </button>
+              </div>
             </>
           )}
-
+          
           {imagePreview && (
             <>
               <h2 style={{ marginTop: '0px' }}>Create Puzzle</h2>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-              <button
-              className="button button-primary"
-              onClick={createPuzzle}
-              disabled={loading}
-              >
-              {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span>Creating Puzzle...</span>
-              <div className="spinner" style={{ width: '16px', height: '16px', float: 'right', marginLeft: '8px' }} />
-              </div>
-              ) : (
-              'Create Puzzle'
-              )}
-              </button>
-                
+                <button
+                  className="button button-primary"
+                  onClick={createPuzzle}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span>Creating Puzzle...</span>
+                      <div className="button-loading"/>
+                    </div>
+                  ) : (
+                    'Create Puzzle'
+                  )}
+                </button>
               </div>
               {loading && (
                 <div style={{ marginTop: '0.5rem', fontSize: '14px', color: '#666' }}>
@@ -220,7 +250,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Fixed bottom-right icons and footer */}
       <footer
         style={{
           position: 'fixed',
@@ -228,12 +257,10 @@ const App: React.FC = () => {
           left: 0,
           width: '100%',
           backgroundColor: '#fff',
-          //borderTop: '1px solid #ddd',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '10px 20px',
-          //boxShadow: '0 -1px 5px rgba(0, 0, 0, 0.05)',
           zIndex: 1000,
         }}
       >
@@ -259,13 +286,8 @@ const App: React.FC = () => {
             <span className="icon icon-comment-feedback" />
           </a>
         </div>
-        <div
-          style={{
-            fontSize: '12px',
-            color: '#777',
-          }}
-        >
-          Powered by:{' '}
+        <div style={{ fontSize: '12px', color: '#777' }}>
+          @{' '}
           <a
             href="https://linkedin.com/in/driton-christensen"
             target="_blank"
