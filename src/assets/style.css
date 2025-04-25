@@ -66,41 +66,74 @@ img {
   filter: invert(19%) sepia(97%) saturate(1883%) hue-rotate(235deg) brightness(97%) contrast(98%);  
 }
 
-.tooltip {
+.custom-tooltip-trigger {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  min-width: 160px;
-  background-color: var(--blue-900, #050038); /* Miro dark tooltip bg */
-  color: white;
-  text-align: center;
-  border-radius: 6px;
-  padding: 8px 12px;
+.custom-tooltip-trigger .icon {
+  color: #6b6b6b;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.custom-tooltip-trigger:hover .icon {
+  color: #4262ff;
+}
+
+.custom-tooltip-content {
+  font-family: inherit;
   position: absolute;
-  z-index: 1000;
-  top: 125%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 213%;
+  left: -255%;
+  transform: translateY(-50%);
+  background: var(--colors-gray-900);
+  color: var(--colors-gray-50);
+  padding: calc(var(--space-50) + var(--space-25)) var(--space-100);
+  line-height: var(--line-heights-400);
+  border-radius: var(--radii-100);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 999;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-  font-size: 13px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  visibility: hidden;
+  transition: opacity 0.2s ease;
   pointer-events: none;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
+.custom-tooltip-trigger:hover .custom-tooltip-content {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-tooltip-arrow {
+  position: absolute;
+  top: -5%;
+  left: 68px;
+  transform: translateY(-50%) rotate(180deg);
+  width: 10px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.custom-tooltip-arrow::before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 5px;
+  background-color: #1f1f1f;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
 .button.button-danger {
   cursor: pointer;
   margin-bottom: 15px;
 }
-
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

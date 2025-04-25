@@ -108,26 +108,6 @@ const App: React.FC = () => {
     removeImage();
   };
 
-  const snapToGrid = async () => {
-    const widgets = await miro.board.get({ type: 'image' });
-
-    for (const widget of widgets) {
-      const meta = (await widget.getMetadata())?.puzzle;
-      if (!meta || !widget) continue;
-
-      const size = widget.width + gridSpacing;
-      const snappedX = Math.round(widget.x / size) * size;
-      const snappedY = Math.round(widget.y / size) * size;
-
-      await widget.set({ x: snappedX, y: snappedY });
-    }
-  };
-
-  React.useEffect(() => {
-    const interval = setInterval(() => snapToGrid(), 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -140,7 +120,6 @@ const App: React.FC = () => {
       <div className="grid wrapper" style={{ paddingBottom: '100px' }}>
         <div className="cs1 ce12">
           <p>Select a puzzle size, upload an image, and create the puzzle!</p>
-
           <h2>Select Puzzle Size</h2>
           <div>
             {[2, 3, 4, 5].map((size) => (
@@ -154,15 +133,16 @@ const App: React.FC = () => {
               </button>
             ))}
           </div>
-
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             Upload an Image
-            <span className="tooltip">
-              <span className="icon icon-info" style={{ fontSize: '18px', color: '#999', cursor: 'pointer' }} />
-              <span className="tooltiptext">Accepted file types: PNG, JPEG, JPG</span>
-            </span>
+            <div className="custom-tooltip-trigger">
+              <span className="icon icon-info" />
+              <div className="custom-tooltip-content" role="tooltip">
+                PNG, JPEG files only.
+                <div className="custom-tooltip-arrow" />
+              </div>
+            </div>
           </h2>
-
           <div
             className="image-drop-zone"
             onDragOver={(e) => e.preventDefault()}
@@ -178,7 +158,6 @@ const App: React.FC = () => {
           >
             <p>Drag and drop an image here, or click to select one</p>
           </div>
-
           <input
             type="file"
             accept=".png, .jpeg, .jpg"
@@ -186,11 +165,9 @@ const App: React.FC = () => {
             ref={fileInputRef}
             style={{ display: 'none' }}
           />
-
           {errorMessage && (
             <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{errorMessage}</p>
           )}
-
           {imagePreview && (
             <>
               <h2>Preview</h2>
@@ -199,7 +176,6 @@ const App: React.FC = () => {
                 alt="Preview"
                 style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '0.5rem' }}
               />
-
               <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '8px' }}>
                 <button
                   className="button button-danger"
@@ -220,7 +196,6 @@ const App: React.FC = () => {
               </div>
             </>
           )}
-          
           {imagePreview && (
             <>
               <h2 style={{ marginTop: '0px' }}>Create Puzzle</h2>
@@ -249,7 +224,6 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
-
       <footer
         style={{
           position: 'fixed',
