@@ -138,7 +138,7 @@ const App: React.FC = () => {
             <div className="custom-tooltip-trigger">
               <span className="icon icon-info" />
               <div className="custom-tooltip-content" role="tooltip">
-                PNG, JPEG files only.
+                PNG, JPEG
                 <div className="custom-tooltip-arrow" />
               </div>
             </div>
@@ -239,26 +239,36 @@ const App: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <a
-            href="https://miro.com/marketplace/puzzleit/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => window.open('https://miro.com/marketplace/puzzleit/', '_blank')}
             className="icon-button"
             title="More Info"
-            role="button"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <span className="icon icon-info" />
-          </a>
-          <a
-            href="https://forms.gle/2ZJZA5EhNdhfZivW8"
-            target="_blank"
-            rel="noopener noreferrer"
+          </button>
+          <button
+            onClick={() => window.open('https://forms.gle/2ZJZA5EhNdhfZivW8', '_blank')}
             className="icon-button"
             title="Comment-Feedback"
-            role="button"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <span className="icon icon-comment-feedback" />
-          </a>
+          </button>
         </div>
         <div style={{ fontSize: '12px', color: '#777' }}>
           @{' '}

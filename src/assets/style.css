@@ -88,7 +88,7 @@ img {
   font-family: inherit;
   position: absolute;
   top: 213%;
-  left: -255%;
+  /* left: -219%; */
   transform: translateY(-50%);
   background: var(--colors-gray-900);
   color: var(--colors-gray-50);
@@ -114,7 +114,7 @@ img {
 .custom-tooltip-arrow {
   position: absolute;
   top: -5%;
-  left: 68px;
+  left: 33px;
   transform: translateY(-50%) rotate(180deg);
   width: 10px;
   height: 5px;
