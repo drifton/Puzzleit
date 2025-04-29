@@ -53,9 +53,9 @@ body:
     attributes:
       label: Can you reproduce the issue consistently?
       options:
-        - Yes
-        - No
-        - Sometimes
+        - "Yes"
+        - "No"
+        - "Sometimes"
       default: 0
 
   - type: input
