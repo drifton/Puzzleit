@@ -1,36 +1,65 @@
-name: New feature
-description: Suggest or request a new feature
+name: ✨ Feature Request
+description: Suggest a new idea or enhancement for Puzzleit
+title: "[Feature] "
 labels: ["enhancement"]
+assignees: []
+
 body:
   - type: markdown
     attributes:
       value: |
-        Please fill out the sections below to properly describe the new feature you are suggesting.
+        Thank you for helping improve Puzzleit! Use this form to suggest a new feature or improvement.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature summary
+      description: A short title or description of your idea.
+      placeholder: "e.g. Add multiplayer puzzle collaboration"
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:
       label: Describe the feature
-      placeholder: A button in the screen X that allows to do Y
+      description: Explain what you want to see added and why it would be helpful.
+      placeholder: "It would be great if users could solve puzzles together in real time..."
     validations:
       required: true
+
   - type: textarea
-    id: rationale
+    id: usecase
     attributes:
-      label: It should be implemented because
-      placeholder: It will allow to do Y that is needed for Z
+      label: Use case or motivation
+      description: How would this feature improve your experience or solve a problem?
+      placeholder: "This would help our team use Puzzleit as a collaborative game during retrospectives."
+
   - type: textarea
-    id: context
+    id: alternatives
     attributes:
-      label: Additional context
-      placeholder: |
-        Add any other context or screenshots about the feature request here.
+      label: Alternatives considered
+      description: Did you think about other approaches or workarounds?
+      placeholder: "We tried splitting screens, but it's hard to coordinate pieces."
+
   - type: dropdown
-    id: assign
+    id: priority
     attributes:
-      label: "Would you like to work on this issue?"
+      label: How important is this to you?
       options:
-        - "Yes"
+        - "Nice to have"
+        - "Useful"
+        - "Important"
+        - "Critical"
+      default: 1
+
+  - type: input
+    id: email
+    attributes:
+      label: Email (optional)
+      description: Add your email if you'd like us to follow up with you.
+      placeholder: "your@email.com"
+
   - type: markdown
     attributes:
-      value: |
-        Thanks for your suggestion! Let's see together if it can be implemented.
+      value: "Thanks for your idea! 🚀 We’ll consider it for future updates to Puzzleit."
