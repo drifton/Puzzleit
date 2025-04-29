@@ -50,6 +50,12 @@ const App: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const createPuzzle = async () => {
     if (!image) return;
     setLoading(true);
@@ -99,30 +105,8 @@ const App: React.FC = () => {
 
     setLoading(false);
     setProgress(0);
-    setImage(null);
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    removeImage();
   };
-
-  const snapToGrid = async () => {
-    const widgets = await miro.board.get({ type: 'image' });
-
-    for (const widget of widgets) {
-      const meta = (await widget.getMetadata())?.puzzle;
-      if (!meta || !widget) continue;
-
-      const size = widget.width + gridSpacing;
-      const snappedX = Math.round(widget.x / size) * size;
-      const snappedY = Math.round(widget.y / size) * size;
-
-      await widget.set({ x: snappedX, y: snappedY });
-    }
-  };
-
-  React.useEffect(() => {
-    const interval = setInterval(() => snapToGrid(), 2000);
-    return () => clearInterval(interval);
-  }, []);
 
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -136,7 +120,6 @@ const App: React.FC = () => {
       <div className="grid wrapper" style={{ paddingBottom: '100px' }}>
         <div className="cs1 ce12">
           <p>Select a puzzle size, upload an image, and create the puzzle!</p>
-
           <h2>Select Puzzle Size</h2>
           <div>
             {[2, 3, 4, 5].map((size) => (
@@ -150,8 +133,16 @@ const App: React.FC = () => {
               </button>
             ))}
           </div>
-
-          <h2>Upload an Image</h2>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            Upload an Image
+            <div className="custom-tooltip-trigger">
+              <span className="icon icon-info" />
+              <div className="custom-tooltip-content" role="tooltip">
+                PNG, JPEG
+                <div className="custom-tooltip-arrow" />
+              </div>
+            </div>
+          </h2>
           <div
             className="image-drop-zone"
             onDragOver={(e) => e.preventDefault()}
@@ -165,7 +156,7 @@ const App: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            <p>Drag and drop an image here, or click to select one (.png, .jpg)</p>
+            <p>Drag and drop an image here, or click to select one</p>
           </div>
           <input
             type="file"
@@ -174,41 +165,55 @@ const App: React.FC = () => {
             ref={fileInputRef}
             style={{ display: 'none' }}
           />
-
           {errorMessage && (
             <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{errorMessage}</p>
           )}
-
           {imagePreview && (
             <>
               <h2>Preview</h2>
               <img
                 src={imagePreview}
                 alt="Preview"
-                style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '1rem' }}
+                style={{ maxWidth: '100%', maxHeight: '300px', marginBottom: '0.5rem' }}
               />
+              <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '8px' }}>
+                <button
+                  className="button button-danger"
+                  type="button"
+                  aria-label="Remove image"
+                  onClick={() => {
+                    setImage(null);
+                    setImagePreview(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  style={{ cursor: 'pointer' }}  // Add cursor style here for pointer effect
+                >
+                  <span 
+                  className="icon icon-trash" 
+                  style={{ cursor: 'pointer' }}  // Add cursor style directly to the icon
+                  />
+                </button>
+              </div>
             </>
           )}
-
           {imagePreview && (
             <>
               <h2 style={{ marginTop: '0px' }}>Create Puzzle</h2>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-              <button
-              className="button button-primary"
-              onClick={createPuzzle}
-              disabled={loading}
-              >
-              {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span>Creating Puzzle...</span>
-              <div className="spinner" style={{ width: '16px', height: '16px', float: 'right', marginLeft: '8px' }} />
-              </div>
-              ) : (
-              'Create Puzzle'
-              )}
-              </button>
-                
+                <button
+                  className="button button-primary"
+                  onClick={createPuzzle}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span>Creating Puzzle...</span>
+                      <div className="button-loading"/>
+                    </div>
+                  ) : (
+                    'Create Puzzle'
+                  )}
+                </button>
               </div>
               {loading && (
                 <div style={{ marginTop: '0.5rem', fontSize: '14px', color: '#666' }}>
@@ -219,8 +224,6 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Fixed bottom-right icons and footer */}
       <footer
         style={{
           position: 'fixed',
@@ -228,44 +231,47 @@ const App: React.FC = () => {
           left: 0,
           width: '100%',
           backgroundColor: '#fff',
-          //borderTop: '1px solid #ddd',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '10px 20px',
-          //boxShadow: '0 -1px 5px rgba(0, 0, 0, 0.05)',
           zIndex: 1000,
         }}
       >
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <a
-            href="https://miro.com/marketplace/puzzleit/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => window.open('https://miro.com/marketplace/puzzleit/', '_blank')}
             className="icon-button"
             title="More Info"
-            role="button"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <span className="icon icon-info" />
-          </a>
-          <a
-            href="https://forms.gle/2ZJZA5EhNdhfZivW8"
-            target="_blank"
-            rel="noopener noreferrer"
+          </button>
+          <button
+            onClick={() => window.open('https://forms.gle/2ZJZA5EhNdhfZivW8', '_blank')}
             className="icon-button"
             title="Comment-Feedback"
-            role="button"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <span className="icon icon-comment-feedback" />
-          </a>
+          </button>
         </div>
-        <div
-          style={{
-            fontSize: '12px',
-            color: '#777',
-          }}
-        >
-          Powered by:{' '}
+        <div style={{ fontSize: '12px', color: '#777' }}>
+          @{' '}
           <a
             href="https://linkedin.com/in/driton-christensen"
             target="_blank"
