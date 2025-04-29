@@ -1,0 +1,19 @@
+name: 🆘 Help Request
+description: Ask a question or get help with Puzzleit
+title: "[Help] "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you need help with?
+      description: Ask your question clearly and include context.
+      placeholder: "How do I upload a custom puzzle image?"
+    validations:
+      required: true
+
+  - type: input
+    id: email
+    attributes:
+      label: Email (optional)
+      description: So we can reply if needed.
