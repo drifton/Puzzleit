@@ -1,0 +1,83 @@
+name: 🐞 Bug Report
+description: Report a bug or unexpected behavior in Puzzleit
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug with Puzzleit! Please fill out the form below as clearly and completely as possible.
+
+  - type: input
+    id: bug_title
+    attributes:
+      label: Short summary
+      description: Briefly describe the issue in one sentence.
+      placeholder: "e.g. Puzzle pieces overlap when image is dragged"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear and detailed description of the problem.
+      placeholder: "What happened? What did you expect to happen instead?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Please list the steps someone can take to reproduce the bug.
+      placeholder: |
+        1. Upload an image
+        2. Click 'Create Puzzle'
+        3. Drag the image
+        4. Pieces overlap incorrectly
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+      placeholder: "Puzzle pieces should snap without overlap."
+
+  - type: dropdown
+    id: reproducible
+    attributes:
+      label: Can you reproduce the issue consistently?
+      options:
+        - Yes
+        - No
+        - Sometimes
+      default: 0
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment (browser/OS/version)
+      description: What platform are you using?
+      placeholder: "e.g. Chrome 123 on macOS Sonoma"
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      description: Drag and drop images here or describe the UI if applicable.
+
+  - type: input
+    id: email
+    attributes:
+      label: Email (optional)
+      description: If you'd like a follow-up, leave your email.
+      placeholder: "your@email.com"
+
+  - type: markdown
+    attributes:
+      value: "Thanks again for helping us improve Puzzleit! 🎯"
