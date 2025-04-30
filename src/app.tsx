@@ -255,7 +255,7 @@ const App: React.FC = () => {
             <span className="icon icon-info" />
           </button>
           <button
-            onClick={() => window.open('https://forms.gle/2ZJZA5EhNdhfZivW8', '_blank')}
+            onClick={() => window.open('https://github.com/drifton/Puzzleit/issues', '_blank')}
             className="icon-button"
             title="Comment-Feedback"
             style={{
