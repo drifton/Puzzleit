@@ -4,12 +4,6 @@ title: "[BUG] "
 labels: ["bug"]
 assignees: []
 
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for reporting a bug with Puzzleit! Please fill out the form below as clearly and completely as possible.
-
   - type: input
     id: bug_title
     attributes:
@@ -71,13 +65,6 @@ body:
       label: Screenshots (optional)
       description: Drag and drop images here or describe the UI if applicable.
 
-  - type: input
-    id: email
-    attributes:
-      label: Email (optional)
-      description: If you'd like a follow-up, leave your email.
-      placeholder: "your@email.com"
-
   - type: markdown
     attributes:
-      value: "Thanks again for helping us improve Puzzleit! 🎯"
+      value: "Thanks for helping us improve Puzzleit! "
