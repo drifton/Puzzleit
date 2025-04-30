@@ -5,19 +5,6 @@ labels: ["enhancement"]
 assignees: []
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thank you for helping improve Puzzleit! Use this form to suggest a new feature or improvement.
-
-  - type: input
-    id: summary
-    attributes:
-      label: Feature summary
-      description: A short title or description of your idea.
-      placeholder: "e.g. Add multiplayer puzzle collaboration"
-    validations:
-      required: true
 
   - type: textarea
     id: description
