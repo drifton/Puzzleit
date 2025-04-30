@@ -11,9 +11,3 @@ body:
       placeholder: "How do I upload a custom puzzle image?"
     validations:
       required: true
-
-  - type: input
-    id: email
-    attributes:
-      label: Email (optional)
-      description: So we can reply if needed.
