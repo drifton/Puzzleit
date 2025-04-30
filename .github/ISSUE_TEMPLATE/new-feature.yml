@@ -14,7 +14,18 @@ body:
       placeholder: "It would be great if users could solve puzzles together in real time..."
     validations:
       required: true
-
+      
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this to you?
+      options:
+        - "Nice to have"
+        - "Useful"
+        - "Important"
+        - "Critical"
+      default: 1
+      
   - type: textarea
     id: usecase
     attributes:
@@ -28,17 +39,7 @@ body:
       label: Alternatives considered
       description: Did you think about other approaches or workarounds?
       placeholder: "We tried splitting screens, but it's hard to coordinate pieces."
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: How important is this to you?
-      options:
-        - "Nice to have"
-        - "Useful"
-        - "Important"
-        - "Critical"
-      default: 1
+      
 
   - type: markdown
     attributes:
