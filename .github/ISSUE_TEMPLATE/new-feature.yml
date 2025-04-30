@@ -40,13 +40,6 @@ body:
         - "Critical"
       default: 1
 
-  - type: input
-    id: email
-    attributes:
-      label: Email (optional)
-      description: Add your email if you'd like us to follow up with you.
-      placeholder: "your@email.com"
-
   - type: markdown
     attributes:
       value: "Thanks for your idea! 🚀 We’ll consider it for future updates to Puzzleit."
