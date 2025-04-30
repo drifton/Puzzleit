@@ -5,15 +5,6 @@ labels: ["bug"]
 assignees: []
 
 body:
-  - type: input
-    id: bug_title
-    attributes:
-      label: Short summary
-      description: Briefly describe the issue in one sentence.
-      placeholder: "e.g. Puzzle pieces overlap when image is dragged"
-    validations:
-      required: true
-
   - type: textarea
     id: description
     attributes:
