@@ -1,7 +1,6 @@
 name: 🐞 Bug Report
-description: Report a bug or unexpected behavior in Puzzleit
 title: "[BUG] "
-description: Briefly describe the issue in one sentence.
+description: Report a bug or unexpected behavior in Puzzleit
 labels: ["bug"]
 assignees: []
 
