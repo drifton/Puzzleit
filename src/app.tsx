@@ -270,19 +270,17 @@ const App: React.FC = () => {
             <span className="icon icon-comment-feedback" />
           </button>
         </div>
-        {process.env.NODE_ENV !== 'production' && (
-          <div style={{ fontSize: '12px', color: '#777' }}>
-            @{' '}
-            <a
-              href="https://linkedin.com/in/driton-christensen"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#4262ff', textDecoration: 'none' }}
-            >
-              Driton Christensen
-            </a>
-          </div>
-        )}
+        <div style={{ fontSize: '12px', color: '#777' }}>
+          @{' '}
+          <a
+            href="https://linkedin.com/in/driton-christensen"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#4262ff', textDecoration: 'none' }}
+          >
+            Driton Christensen
+          </a>
+        </div>
       </footer>
     </>
   );
