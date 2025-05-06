@@ -18,7 +18,7 @@ const App: React.FC = () => {
     if (!file) return;
 
     if (!allowedTypes.includes(file.type)) {
-      setErrorMessage('Invalid file type. Please upload a .png, .jpeg, or .jpg file.');
+      setErrorMessage('Invalid file type. Please upload a .png, .jpeg or .jpg file.');
       return;
     }
 
